@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import type { ChatMessage, ProductResponse } from "../models"
 import r4 from '../assets/r4.png'
 
 
 const Product = () => {
+    const navigate = useNavigate()
     const {id} = useParams<{id :string}>()
     const [product, setProduct] = useState<ProductResponse>()
     const [showChatModal, setShowChatModal] = useState<boolean>(false)
@@ -59,15 +60,19 @@ const Product = () => {
     }
 
     return (
-        <div className="p-12 bg-gray-100 w-full h-full">
+        <div className="p-12 bg-gray-100 w-full h-full overflow-auto">
+            <div className="mb-8">
+                <p onClick={() => navigate('/')} className='cursor-pointer text-4xl font-medium overline text-green-500'>EasyBuy</p>
+            </div>
+
             {product && (
                 <div className="w-full h-full">
                     <div className="flex w-full h-full gap-8">
                         <div className="w-3/5">
-                            <img src={r4} alt="" className="w-full h-5/6 mb-4"/>
+                            <img src={r4} alt="" className="w-full h-5/7 mb-4"/>
                             <div>
                                 <p className="font-semibold">Highlight by Chuks, your AI chat assistant:</p>
-                                <p className="text-sm mb-2">{product.reviewSummary}</p>
+                                <p className="text-sm mb-3">{product.reviewSummary}</p>
                                 <button 
                                     onClick={() => setShowChatModal(true)}
                                     className="cursor-pointer bg-green-500 text-white shadow-md p-2 rounded">Ask Chuks</button>
