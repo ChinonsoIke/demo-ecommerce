@@ -6,10 +6,11 @@ import r4 from '../assets/r4.png'
 
 const Product = () => {
     const navigate = useNavigate()
+    const initialMessage :ChatMessage = {role: 0, text: "This is Chuks, your helpful shopping assistant. Feel free to throw me any questions you have!"} 
     const {id} = useParams<{id :string}>()
     const [product, setProduct] = useState<ProductResponse>()
     const [showChatModal, setShowChatModal] = useState<boolean>(false)
-    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([initialMessage])
     const [chatInput, setChatInput] = useState('')
     const [disableInput, setDisableInput] = useState(false)
 
@@ -21,7 +22,7 @@ const Product = () => {
         }
 
         getProduct()
-    })
+    }, [])
 
     const sendMessage = async () => {
         setDisableInput(true)
@@ -36,7 +37,7 @@ const Product = () => {
 
         if(!response.body) return;
 
-        setChatMessages(prev => [...prev, {role: 0, text: ''}])
+        setChatMessages(prev => [...prev, {role: 0, text: '...'}])
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -50,7 +51,7 @@ const Product = () => {
                 const updated = [...prev];
                 updated[updated.length - 1] = {
                     ...updated[updated.length - 1],
-                    text: updated[updated.length - 1].text + chunk
+                    text: updated[updated.length - 1].text == '...' ? chunk : updated[updated.length - 1].text + chunk
                 };
                 return updated;
             });
@@ -91,8 +92,9 @@ const Product = () => {
 
             {showChatModal && (
                 <div className="w-1/5 rounded-lg bg-gray-100 shadow-md h-3/5 absolute bottom-1/4 left-8">
-                    <div className="absolute h-1/14 top-0 w-full text-xl font-bold flex items-center justify-end px-4 text-green-500">
-                            <p onClick={() => {setShowChatModal(false); setChatMessages([])}} 
+                    <div className="h-1/14 w-full text-xl font-bold flex items-center justify-between bg-white px-4 text-green-500">
+                            <p className="font-medium text-lg">Ask Chuks</p>
+                            <p onClick={() => {setShowChatModal(false); setChatMessages([initialMessage])}} 
                                 className="p-2 cursor-pointer">x</p>
                         </div>
                     <div className="h-12/14 w-full flex flex-col items-end p-2 overflow-y-auto">
@@ -103,7 +105,7 @@ const Product = () => {
                                 )
                             )}
                     </div>
-                    <div className="absolute rounded-br-lg rounded-bl-lg w-full bg-gray-200 h-2/14 bottom-0 flex justify-center items-center">
+                    <div className="rounded-br-lg gap-2 rounded-bl-lg w-full bg-gray-200 h-2/14 flex justify-center items-center">
                         <input type="text"
                             disabled={disableInput}
                             onChange={(e) => setChatInput(e.target.value)}
@@ -113,6 +115,7 @@ const Product = () => {
                                 }
                             }}
                             className="border border-green-500 rounded p-1" name='chatInput' value={chatInput} id="" />
+                        <button onClick={() => sendMessage()} className="cursor-pointer bg-green-500 rounded-full text-white font-bold p-1">{'->'}</button>
                     </div>
                 </div>
             )}

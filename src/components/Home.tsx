@@ -26,11 +26,11 @@ function Home() {
   }, [])
 
   return (
-    <div className='p-12 bg-gray-100 w-full h-full'>
+    <div className='overflow-auto p-12 bg-gray-100 w-full h-full'>
       <div>
         <p onClick={() => navigate('/')} className='cursor-pointer text-4xl font-medium overline text-green-500'>EasyBuy</p>
       </div>
-      <div className='flex flex-wrap md:gap-8 justify-center py-12'>
+      <div className='overflow-auto flex flex-wrap md:gap-8 justify-center py-12'>
         {products && products.map(p => (
           <div key={p.id} 
             onClick={() => navigate(`/product/${p.id}`)} 
